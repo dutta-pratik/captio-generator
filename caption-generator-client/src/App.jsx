@@ -13,7 +13,7 @@ export default function App() {
   const [streamMode, setStreamMode] = useState(true);
 
   useEffect(()=>{
-    console.log('use effect file', file);
+
     if(blobURLRef.current){
       URL.revokeObjectURL(blobURLRef.current)
     }
@@ -28,7 +28,6 @@ export default function App() {
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
-    console.log('handleFileChange', file, e.target.files[0]);
   }
 
   // Get the caption from the image in non-stream mode
@@ -54,7 +53,6 @@ export default function App() {
         });
         const ollamaResponse = response.data.response;
         setCaptions(ollamaResponse);
-        console.log('Ollama response:', ollamaResponse);
       } catch (error) {
         console.error('Error calling Ollama:', error);
       } finally {
@@ -118,7 +116,6 @@ export default function App() {
               if (json.response) {
                 caption += json.response;
                 // Update caption progressively for typing effect
-                console.log('caption', caption);
                 setCaptions(caption);
               }
             } catch (e) {
@@ -126,8 +123,6 @@ export default function App() {
             }
           }
         }
-
-        console.log('Final caption:', caption);
       } catch (error) {
         console.error('Error calling Ollama:', error);
       }
