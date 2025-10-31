@@ -10,7 +10,7 @@ export default function App() {
   const [captions, setCaptions] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const blobURLRef = useRef('');
-  const [streamMode, setStreamMode] = useState(true);
+  const [streamMode, setStreamMode] = useState(false);
 
   useEffect(()=>{
 
