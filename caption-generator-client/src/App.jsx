@@ -5,6 +5,9 @@ import './App.css'
 
 export default function App() {
 
+  // Ollama URL - works in both dev and Docker
+  const OLLAMA_URL = import.meta.env.VITE_OLLAMA_URL || 'http://127.0.0.1:11434';
+
   const [file, setFile] = useState(null);
   const [previewFileURL, setPreviewFileURL] = useState(null);
   const [captions, setCaptions] = useState('');
@@ -41,7 +44,7 @@ export default function App() {
     fileReader.onload = async () => {
       const base64String = fileReader.result.split(',')[1];
       try {
-        const response = await axios.post('http://127.0.0.1:11434/api/generate', {
+        const response = await axios.post(`${OLLAMA_URL}/api/generate`, {
           model: 'gemma3:4b',
           prompt: `Give me an instagram caption for this image under 100 words. 
                     Make sure to give me just the caption and no other text. 
@@ -79,7 +82,7 @@ export default function App() {
       
       try {
         // Use fetch() instead of axios for streaming
-        const response = await fetch('http://127.0.0.1:11434/api/generate', {
+        const response = await fetch(`${OLLAMA_URL}/api/generate`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

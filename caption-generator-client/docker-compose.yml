@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Ollama service (AI model)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-service
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    # Uncomment if you have NVIDIA GPU
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # React frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: caption-generator-app
+    ports:
+      - "8080:80"
+    depends_on:
+      - ollama
+    environment:
+      - VITE_OLLAMA_URL=http://ollama:11434
+    restart: unless-stopped
+
+  # Initialize Ollama with the model (runs once)
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: ollama-init
+    depends_on:
+      - ollama
+    volumes:
+      - ollama-data:/root/.ollama
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      echo 'Waiting for Ollama service to be ready...';
+      sleep 10;
+      echo 'Pulling gemma3:4b model...';
+      ollama pull gemma3:4b;
+      echo 'Model ready!';
+      "
+    restart: "no"
+
+volumes:
+  ollama-data:
+    driver: local
+
